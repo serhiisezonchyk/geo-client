@@ -56,7 +56,7 @@ function onEachFeature(feature, layer) {
       .querySelector(".leaflet-layer");
     baseLayerContainer.classList.add("blur");
   });
-  
+   
   layer.on("popupclose", () => {
     const map = layer._map;
     const baseLayerContainer = map

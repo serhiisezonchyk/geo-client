@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Icon } from "leaflet";
-import { fetchAll, fetchOne } from "../../http/userLayerApi";
+import { fetchAll, fetchOne } from "../../http/layers/userLayerApi";
 import { GeoJSON, MapContainer } from "react-leaflet";
 import UserPopup from "../popups/UserPopup";
 import * as ReactDOMServer from "react-dom/server";

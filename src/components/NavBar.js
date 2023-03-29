@@ -11,7 +11,6 @@ const NavBar = observer(() => {
   const navigate = useNavigate();
 
   const authButton = () => {
-    console.log(user.isAuth);
     if (user.isAuth) {
       return (<Button
         key={user.user.id}

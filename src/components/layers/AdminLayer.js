@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchAll, fetchOne } from "../../http/adminLayerApi";
+import { fetchAll, fetchOne } from "../../http/layers/adminLayerApi";
 import { GeoJSON } from "react-leaflet";
 import AdminPopup from "../popups/AdminPopup";
 import * as ReactDOMServer from "react-dom/server";

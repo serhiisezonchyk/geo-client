@@ -1,4 +1,4 @@
-import { $host } from "./index";
+import { $host } from "../index";
 export const fetchAll = async () => {
   const { data } = await $host.get("api/adminShapes");
   return data;

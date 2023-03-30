@@ -17,6 +17,9 @@ const App = observer(() => {
       .then((data) => {
         user.setUser(data);
         user.setIsAuth(true);
+      }).catch(()=>{
+        user.setUser([]);
+        user.setIsAuth(false);
       })
       .finally(() => {
         setLoading(false);

@@ -13,11 +13,14 @@ const OffCanvasLayers = (props) => {
       setCategories(data);
       data.forEach((category) => {
         const checkboxName = `${category.name}-${category.id}`;
-        const checkboxState = localStorage.getItem(checkboxName) === 'true';
-        document.getElementById(checkboxName).checked = checkboxState;
+        const checkboxState = localStorage.getItem(checkboxName) === "true";
+        const checkboxElem = document.getElementById(checkboxName);
+        if (checkboxElem) {
+          checkboxElem.checked = checkboxState;
+        }
       });
     });
-  }, [props]);
+  }, [props.show]);
 
   return (
     <Offcanvas show={props.show} onHide={handleClose} placement="end">

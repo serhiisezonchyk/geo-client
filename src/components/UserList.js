@@ -1,14 +1,9 @@
-import { observer } from "mobx-react-lite";
-import React, { useContext, useEffect } from "react";
-import { Button, Table } from "react-bootstrap";
-import { Context } from "../index";
+import React, { useState, useEffect } from "react";
+import { Table } from "react-bootstrap";
+import { fetchAllUsers } from "../http/userApi";
 import UserItem from "./UserItem";
 
-const UserList = observer(() => {
-  const { users } = useContext(Context);
-
-  console.log(users);
-  users.users.map((singleUser) => console.log(singleUser));
+const UserList = (users) => {
   return (
     <div className="row justify-content-center">
       <Table striped bordered hover>
@@ -24,18 +19,10 @@ const UserList = observer(() => {
           {users.users.map((singleUser) => (
             <UserItem key={singleUser.id} singleUser={singleUser} />
           ))}
-          <tr>
-            <td>email</td>
-            <td>pass</td>
-            <td>role</td>
-            <td>
-              <Button variant="outline-success">Додати</Button>
-            </td>
-          </tr>
         </tbody>
       </Table>
     </div>
   );
-});
+};
 
 export default UserList;

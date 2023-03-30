@@ -52,7 +52,6 @@ function Map() {
       removeGeojsonLayer(map, categoryId);
     }
     localStorage.setItem(name, checked);
-    console.log(localStorage);
   };
 
   return (

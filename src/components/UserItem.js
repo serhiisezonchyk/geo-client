@@ -5,7 +5,6 @@ import { fetchOneRole } from "../http/roleApi";
 import { deleteUser } from "../http/userApi";
 
 const UserItem = ({singleUser}) => {
-  const { users } = useContext(Context);
   const [role, setRole] = useState("");
   useEffect(() => {
     fetchOneRole(singleUser.roleId).then((data) => setRole(data.name));

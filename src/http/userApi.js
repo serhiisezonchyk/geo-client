@@ -28,9 +28,12 @@ export const fetchAllUsers = async () => {
   return data;
 };
 
-export const deleteUser = async (productId, userId) => {
-  const { data } = await $authHost.delete("api/user/" + productId, {
-    params: { userId },
-  });
+export const deleteUser = async (id) => {
+  const { data } = await $authHost.delete("api/user/" + id);
+  return data;
+};
+
+export const fetchPoliciesForUser = async (id) => {
+  const { data } = await $authHost.get("api/user/" + id + "/policies");
   return data;
 };

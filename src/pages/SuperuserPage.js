@@ -1,29 +1,25 @@
-import React, { useContext, useEffect } from "react";
-import { Context } from "../index";
-import { observer } from "mobx-react-lite";
+import React, { useState, useEffect } from "react";
 
 import { Col, Container, Row } from "react-bootstrap";
-import {fetchAllUsers} from "../http/userApi"
 import UserList from "../components/UserList";
+import { fetchAllUsers } from "../http/userApi";
 
-const SuperuserPage = observer(() => {
-  const { users } = useContext(Context);
-
+const SuperuserPage =() => {
+  const [users, setUsers ] = useState([]);
   useEffect(() => {
-    fetchAllUsers().then((data) => {
-      users.setUsers(data);
-    });
+    fetchAllUsers().then((data) => setUsers(data));
   }, []);
+
 
   return (
     <Container>
       <Row className="mt-2">
         <Col md={8}>
-          <UserList/>
+          <UserList users={users}/>
         </Col>
       </Row>
     </Container>
   );
-});
+};
 
 export default SuperuserPage;

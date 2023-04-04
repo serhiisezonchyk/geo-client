@@ -6,7 +6,6 @@ export default class LayersStore {
     makeAutoObservable(this);
   }
 
-
   get layers() {
     return this._layers;
   }
@@ -17,6 +16,10 @@ export default class LayersStore {
 
   getLayer(name){
     return this._layers[name];
+  }
+
+  setLayers(layers){
+    this._layers = layers;
   }
   
 }

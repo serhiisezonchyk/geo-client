@@ -1,17 +1,31 @@
 import "../index.css";
 import "leaflet/dist/leaflet.css";
 import React, { useContext, useEffect, useState } from "react";
-import { MapContainer, TileLayer, LayersControl } from "react-leaflet";
-import { Button, Image } from "react-bootstrap";
-import { fetchAllProblemInfoPointByCategories } from "../http/layers/problemInfoPointLayerApi";
-import OffCanvasLayers from "../components/OffCanvasLayers";
-import {
-  addGeojsonLayer,
-  removeGeojsonLayer,
-} from "../components/layers/ProblemInfoPointLayer";
-import { fetchAllCategoryProblem } from "../http/categoryProblemApi";
 import { Context } from "../index";
 import { observer } from "mobx-react-lite";
+import { MapContainer, TileLayer, LayersControl } from "react-leaflet";
+import { Button, Image } from "react-bootstrap";
+import OffCanvasLayers from "../components/OffCanvasLayers";
+
+import {
+  addProblemInfoPointLayer,
+  removeProblemInfoPointLayer,
+} from "../components/layers/ProblemInfoPointLayer";
+import { fetchAllCategoryProblem } from "../http/categoryProblemApi";
+
+import {
+  addPublicBuildingPointLayer,
+  removePublicBuildingPointLayer,
+} from "../components/layers/PublicBuildingPoint";
+import { fetchAllPublicBuildingPoint } from "../http/layers/publicBuildingPointApi";
+
+import {
+  addPublicBuildingPolygonLayer,
+  removePublicBuildingPolygonLayer,
+} from "../components/layers/PublicBuildingPolygon";
+import { fetchAllPublicBuildingPolygon } from "../http/layers/publicBuildingPolygonApi";
+
+import { fetchAllProblemInfoPointByCategories } from "../http/layers/problemInfoPointLayerApi";
 
 function Map() {
   const [map, setMap] = useState(null);
@@ -19,27 +33,32 @@ function Map() {
   const { user, layers } = useContext(Context);
 
   useEffect(() => {
-    fetchAllCategoryProblem().then((categories) => {
-      categories.forEach((category) => {
-        const categoryId = category.id;
-        layers.setLayer(`${category.name}-${category.id}`, true);
-        fetchAllProblemInfoPointByCategories({
-          categoryProblemId: categoryId,
-        }).then((data) => {
-          if (map !== null) {
-            addGeojsonLayer(map, data);
-          }
+    if (map)
+      fetchAllCategoryProblem().then((categories) => {
+        categories.forEach((category) => {
+          const categoryId = category.id;
+          layers.setLayer(`${category.name}-${category.id}`, true);
+          fetchAllProblemInfoPointByCategories({
+            categoryProblemId: categoryId,
+          }).then((data) => {
+            addProblemInfoPointLayer(map, data);
+          });
         });
       });
-    });
   }, [map]);
 
   useEffect(() => {
     user.policies.forEach((policy) => {
-      console.log(policy.name);
-      layers.setLayer(`${policy.name}-${policy.id}`, true);
+      layers.setLayer(`${policy.name}-${policy.id}`, false);
     });
   }, [user.policies]);
+
+  //reload page after log out
+  useEffect(() => {
+    if (!user.isAuth && map) {
+      window.location.reload();
+    }
+  }, [user.isAuth]);
 
   const handleShow = () => {
     setShow(true);
@@ -56,10 +75,10 @@ function Map() {
       fetchAllProblemInfoPointByCategories({
         categoryProblemId: categoryId,
       }).then((data) => {
-        if (map !== null) addGeojsonLayer(map, data);
+        if (map !== null) addProblemInfoPointLayer(map, data);
       });
     } else {
-      removeGeojsonLayer(map, categoryId);
+      removeProblemInfoPointLayer(map, categoryId);
     }
     layers.setLayer(name, checked);
   };
@@ -67,10 +86,50 @@ function Map() {
   const handleCheckboxChangeAuth = (event) => {
     const { name, checked } = event.target;
     const policyName = name.split("-")[0];
-    if(checked){
-      console.log(policyName + " checked");
-    }else{
-      console.log(policyName + " uncheced");
+    if (checked) {
+      switch (policyName) {
+        case "public_building_point": {
+          fetchAllPublicBuildingPoint().then((data) => {
+            const newData = data.map((obj) => {
+              return {
+                ...obj,
+                policyName: policyName,
+              };
+            });
+            if (map !== null) addPublicBuildingPointLayer(map, newData);
+          });
+          break;
+        }
+
+        case "public_building_polygon": {
+          fetchAllPublicBuildingPolygon().then((data) => {
+            const newData = data.map((obj) => {
+              return {
+                ...obj,
+                policyName: policyName,
+              };
+            });
+            if (map !== null) addPublicBuildingPolygonLayer(map, newData);
+          });
+          break;
+        }
+        default:
+          break;
+      }
+    } else {
+      switch (policyName) {
+        case "public_building_point": {
+          removePublicBuildingPointLayer(map, policyName);
+          break;
+        }
+
+        case "public_building_polygon": {
+          removePublicBuildingPolygonLayer(map, policyName);
+          break;
+        }
+        default:
+          break;
+      }
     }
 
     layers.setLayer(name, checked);

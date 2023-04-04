@@ -5,6 +5,7 @@ import { Context } from "../index";
 import { fetchAllCategoryProblem } from "../http/categoryProblemApi";
 import { Offcanvas, Form } from "react-bootstrap";
 import { fetchPoliciesForUser } from "../http/userApi";
+import { observer } from "mobx-react-lite";
 const OffCanvasLayers = (props) => {
   const { user, layers } = useContext(Context);
 
@@ -81,4 +82,4 @@ const OffCanvasLayers = (props) => {
   );
 };
 
-export default OffCanvasLayers;
+export default observer(OffCanvasLayers);

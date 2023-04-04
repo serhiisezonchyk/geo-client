@@ -1,25 +1,25 @@
 import React from "react";
-import { fetchOneProblemInfoPoint } from "../../http/layers/problemInfoPointLayerApi";
+import { fetchOne } from "../../http/layers/publicBuildingPolygonApi";
 import * as ReactDOMServer from "react-dom/server";
-import ProblemInfoPointPopup from "../popups/ProblemInfoPointPopup";
 import L, { Icon } from "leaflet";
+import AdminPopup from "../popups/AdminPopup";
 
-export const addProblemInfoPointLayer = (map, geojson) => {
+export const addPublicBuildingPolygonLayer = (map, geojson) => {
   const layer = L.geoJSON(geojson, {
     onEachFeature: onEachFeature,
+    style: style,
   });
   if (map !== null) map.addLayer(layer);
 };
 
-export const removeProblemInfoPointLayer = (map, overlayName) => {
+export const removePublicBuildingPolygonLayer = (map, overlayName) => {
   if (map !== null) {
     map.eachLayer((layer) => {
       if (layer instanceof L.LayerGroup && map.hasLayer(layer)) {
         layer.eachLayer((overlay) => {
-          if (overlay.feature.geometry.category_problem)
+          if (overlay.feature.geometry.policyName)
             if (
-              overlay.feature.geometry.category_problem.id.toString() ===
-              overlayName
+              overlay.feature.geometry.policyName.toString() === overlayName
             ) {
               map.removeLayer(overlay);
             }
@@ -30,19 +30,15 @@ export const removeProblemInfoPointLayer = (map, overlayName) => {
 };
 
 function onEachFeature(feature, layer) {
-  const customIcon = new Icon({
-    iconUrl: feature.category_problem.layer_img,
-    iconSize: [30, 30],
-  });
-  layer.setIcon(customIcon);
   layer.on("click", () => {
-    fetchOneProblemInfoPoint(feature.id).then((data) => {
+    fetchOne(feature.gid).then((data) => {
+      console.log(feature);
       const popupContent = ReactDOMServer.renderToString(
-        <ProblemInfoPointPopup data={data} />
+        <AdminPopup data={data[0]} />
       );
       layer.bindPopup(popupContent);
       layer.openPopup();
-      layer._map.setView(layer.getLatLng(), 17);
+      layer._map.setView(layer.getBounds().getCenter(), 17);
     });
   });
 
@@ -61,4 +57,10 @@ function onEachFeature(feature, layer) {
       .querySelector(".leaflet-layer");
     baseLayerContainer.classList.remove("blur");
   });
+}
+
+function style() {
+  return {
+    fillColor: "#BD0026",
+  };
 }

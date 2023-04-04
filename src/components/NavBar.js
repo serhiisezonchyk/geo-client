@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { SUPERUSER_ROUTE, LOGIN_ROUTE, MAP_ROUTE } from "../utils/consts";
 
 const NavBar = observer(() => {
-  const { user } = useContext(Context);
+  const { user, layers } = useContext(Context);
   const navigate = useNavigate();
   const authButton = () => {
     if (user.isAuth) {
@@ -20,6 +20,7 @@ const NavBar = observer(() => {
             user.setUser({});
             user.setIsAuth(false);
             user.setPolicies([]);
+            layers.setLayers([]);
             localStorage.removeItem("token");
             localStorage.clear();
           }}

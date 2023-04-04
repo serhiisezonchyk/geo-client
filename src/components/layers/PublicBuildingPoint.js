@@ -1,25 +1,24 @@
 import React from "react";
-import { fetchOneProblemInfoPoint } from "../../http/layers/problemInfoPointLayerApi";
+import { fetchOne } from "../../http/layers/publicBuildingPointApi";
 import * as ReactDOMServer from "react-dom/server";
-import ProblemInfoPointPopup from "../popups/ProblemInfoPointPopup";
 import L, { Icon } from "leaflet";
+import UserPopup from "../popups/UserPopup";
 
-export const addProblemInfoPointLayer = (map, geojson) => {
+export const addPublicBuildingPointLayer = (map, geojson) => {
   const layer = L.geoJSON(geojson, {
     onEachFeature: onEachFeature,
   });
   if (map !== null) map.addLayer(layer);
 };
 
-export const removeProblemInfoPointLayer = (map, overlayName) => {
+export const removePublicBuildingPointLayer = (map, overlayName) => {
   if (map !== null) {
     map.eachLayer((layer) => {
       if (layer instanceof L.LayerGroup && map.hasLayer(layer)) {
         layer.eachLayer((overlay) => {
-          if (overlay.feature.geometry.category_problem)
+          if (overlay.feature.geometry.policyName)
             if (
-              overlay.feature.geometry.category_problem.id.toString() ===
-              overlayName
+              overlay.feature.geometry.policyName.toString() === overlayName
             ) {
               map.removeLayer(overlay);
             }
@@ -31,14 +30,15 @@ export const removeProblemInfoPointLayer = (map, overlayName) => {
 
 function onEachFeature(feature, layer) {
   const customIcon = new Icon({
-    iconUrl: feature.category_problem.layer_img,
+    iconUrl: "https://cdn-icons-png.flaticon.com/512/9438/9438201.png",
     iconSize: [30, 30],
   });
   layer.setIcon(customIcon);
   layer.on("click", () => {
-    fetchOneProblemInfoPoint(feature.id).then((data) => {
+    fetchOne(feature.gid).then((data) => {
+      console.log(feature);
       const popupContent = ReactDOMServer.renderToString(
-        <ProblemInfoPointPopup data={data} />
+        <UserPopup data={data[0]} />
       );
       layer.bindPopup(popupContent);
       layer.openPopup();

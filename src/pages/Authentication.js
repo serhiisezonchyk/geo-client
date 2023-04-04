@@ -5,7 +5,7 @@ import {useLocation, useNavigate } from "react-router-dom";
 import { Container, Form, Card, FormControl, Button } from "react-bootstrap";
 
 
-import { login } from "../http/userApi";
+import { fetchPoliciesForUser, login } from "../http/userApi";
 import { MAP_ROUTE } from "../utils/consts";
 
 const Authentication = observer(() => {
@@ -21,7 +21,10 @@ const Authentication = observer(() => {
 
       user.setUser(data);
       user.setIsAuth(true);
-
+      fetchPoliciesForUser(data.id).then((policies)=>{
+        user.setPolicies(policies);
+      })
+      
       navigate(MAP_ROUTE);
     } catch (error) {
       alert(error.response.data.message);

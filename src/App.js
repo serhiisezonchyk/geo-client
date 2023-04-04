@@ -5,7 +5,7 @@ import AppRouter from "./components/AppRouter";
 import React, { useContext, useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { Context } from "./index";
-import { check } from "./http/userApi";
+import { check, fetchPoliciesForUser } from "./http/userApi";
 import { BrowserRouter } from "react-router-dom";
 import { Spinner } from "react-bootstrap";
 const App = observer(() => {
@@ -17,9 +17,13 @@ const App = observer(() => {
       .then((data) => {
         user.setUser(data);
         user.setIsAuth(true);
+        fetchPoliciesForUser(data.id).then((policies)=>{
+          user.setPolicies(policies);
+        })
       }).catch(()=>{
-        user.setUser([]);
+        user.setUser({});
         user.setIsAuth(false);
+        user.setPolicies([]);
       })
       .finally(() => {
         setLoading(false);

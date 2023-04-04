@@ -1,9 +1,12 @@
 import "../index.css";
 import "leaflet/dist/leaflet.css";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { Context } from "../index";
 import { fetchAllCategoryProblem } from "../http/categoryProblemApi";
 import { Offcanvas, Form } from "react-bootstrap";
 const OffCanvasLayers = (props) => {
+  const {user} = useContext(Context);
+
   const handleClose = () => props.setShow(false);
   const handleCheckboxChange = (event) => props.handleCheckboxChange(event);
   const [categories, setCategories] = useState([]);

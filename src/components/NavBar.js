@@ -19,7 +19,9 @@ const NavBar = observer(() => {
           onClick={() => {
             user.setUser({});
             user.setIsAuth(false);
+            user.setPolicies([]);
             localStorage.removeItem("token");
+            localStorage.clear();
           }}
         >
           Вийти

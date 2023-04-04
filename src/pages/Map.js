@@ -1,6 +1,6 @@
 import "../index.css";
 import "leaflet/dist/leaflet.css";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { MapContainer, TileLayer, LayersControl } from "react-leaflet";
 import { Button, Image } from "react-bootstrap";
 import { fetchAllProblemInfoPointByCategories } from "../http/layers/problemInfoPointLayerApi";
@@ -10,10 +10,12 @@ import {
   removeGeojsonLayer,
 } from "../components/layers/ProblemInfoPointLayer";
 import { fetchAllCategoryProblem } from "../http/categoryProblemApi";
+import { Context } from "../index";
 
 function Map() {
   const [map, setMap] = useState(null);
   const [show, setShow] = useState(false);
+  const {user} = useContext(Context);
 
   useEffect(() => {
     fetchAllCategoryProblem().then((categories) => {
@@ -29,6 +31,11 @@ function Map() {
         });
       });
     });
+    // user.policies.map((policy) => {
+    //   console.log(policy.name);
+    //   localStorage.setItem(`${policy.name}-${policy.id}`, true);
+    // });
+    // console.log(localStorage);
   }, [map]);
 
   const handleShow = () => {

@@ -11,17 +11,18 @@ import {
 } from "../components/layers/ProblemInfoPointLayer";
 import { fetchAllCategoryProblem } from "../http/categoryProblemApi";
 import { Context } from "../index";
+import { observer } from "mobx-react-lite";
 
 function Map() {
   const [map, setMap] = useState(null);
   const [show, setShow] = useState(false);
-  const {user} = useContext(Context);
+  const { user, layers } = useContext(Context);
 
   useEffect(() => {
     fetchAllCategoryProblem().then((categories) => {
       categories.forEach((category) => {
         const categoryId = category.id;
-        localStorage.setItem(`${category.name}-${category.id}`, true);
+        layers.setLayer(`${category.name}-${category.id}`, true);
         fetchAllProblemInfoPointByCategories({
           categoryProblemId: categoryId,
         }).then((data) => {
@@ -31,12 +32,14 @@ function Map() {
         });
       });
     });
-    // user.policies.map((policy) => {
-    //   console.log(policy.name);
-    //   localStorage.setItem(`${policy.name}-${policy.id}`, true);
-    // });
-    // console.log(localStorage);
   }, [map]);
+
+  useEffect(() => {
+    user.policies.forEach((policy) => {
+      console.log(policy.name);
+      layers.setLayer(`${policy.name}-${policy.id}`, true);
+    });
+  }, [user.policies]);
 
   const handleShow = () => {
     setShow(true);
@@ -46,7 +49,7 @@ function Map() {
     setMap(map);
   };
 
-  const handleCheckboxChange = (event) => {
+  const handleCheckboxChangeUser = (event) => {
     const { name, checked } = event.target;
     const categoryId = name.split("-")[1];
     if (checked) {
@@ -58,9 +61,20 @@ function Map() {
     } else {
       removeGeojsonLayer(map, categoryId);
     }
-    localStorage.setItem(name, checked);
+    layers.setLayer(name, checked);
   };
 
+  const handleCheckboxChangeAuth = (event) => {
+    const { name, checked } = event.target;
+    const policyName = name.split("-")[0];
+    if(checked){
+      console.log(policyName + " checked");
+    }else{
+      console.log(policyName + " uncheced");
+    }
+
+    layers.setLayer(name, checked);
+  };
   return (
     <>
       <MapContainer
@@ -96,10 +110,11 @@ function Map() {
       <OffCanvasLayers
         show={show}
         setShow={setShow}
-        handleCheckboxChange={handleCheckboxChange}
+        handleCheckboxChangeUser={handleCheckboxChangeUser}
+        handleCheckboxChangeAuth={handleCheckboxChangeAuth}
       />
     </>
   );
 }
 
-export default Map;
+export default observer(Map);

@@ -1,8 +1,8 @@
 import React from "react";
 import { fetchOne } from "../../http/layers/publicBuildingPolygonApi";
 import * as ReactDOMServer from "react-dom/server";
-import L, { Icon } from "leaflet";
-import AdminPopup from "../popups/AdminPopup";
+import L from "leaflet";
+import PublicBuildingPolygonPopup from "../popups/PublicBuildingPolygonPopup";
 
 export const addPublicBuildingPolygonLayer = (map, geojson) => {
   const layer = L.geoJSON(geojson, {
@@ -34,7 +34,7 @@ function onEachFeature(feature, layer) {
     fetchOne(feature.gid).then((data) => {
       console.log(feature);
       const popupContent = ReactDOMServer.renderToString(
-        <AdminPopup data={data[0]} />
+        <PublicBuildingPolygonPopup data={data[0]} />
       );
       layer.bindPopup(popupContent);
       layer.openPopup();

@@ -9,23 +9,11 @@ import OffCanvasLayers from "../components/OffCanvasLayers";
 
 import {
   addProblemInfoPointLayer,
-  removeProblemInfoPointLayer,
 } from "../components/layers/ProblemInfoPointLayer";
 import { fetchAllCategoryProblem } from "../http/categoryProblemApi";
 
-import {
-  addPublicBuildingPointLayer,
-  removePublicBuildingPointLayer,
-} from "../components/layers/PublicBuildingPoint";
-import { fetchAllPublicBuildingPoint } from "../http/layers/publicBuildingPointApi";
-
-import {
-  addPublicBuildingPolygonLayer,
-  removePublicBuildingPolygonLayer,
-} from "../components/layers/PublicBuildingPolygon";
-import { fetchAllPublicBuildingPolygon } from "../http/layers/publicBuildingPolygonApi";
-
 import { fetchAllProblemInfoPointByCategories } from "../http/layers/problemInfoPointLayerApi";
+import { switchLayers } from "../utils/switchLayers";
 
 function Map() {
   const [map, setMap] = useState(null);
@@ -68,72 +56,26 @@ function Map() {
     setMap(map);
   };
 
-  const handleCheckboxChangeUser = (event) => {
+  const handleCheckboxChange = (event) => {
     const { name, checked } = event.target;
-    const categoryId = name.split("-")[1];
-    if (checked) {
-      fetchAllProblemInfoPointByCategories({
-        categoryProblemId: categoryId,
-      }).then((data) => {
-        if (map !== null) addProblemInfoPointLayer(map, data);
+    const [policyName, categoryId] = name.split("-");
+
+    const fetchAndHandleLayer = (fetchFunc, addFunc, removeFunc) => {
+      fetchFunc().then((data) => {
+        const newData = data.map((obj) => ({
+          ...obj,
+          policyName,
+        }));
+        if (map !== null) {
+          checked ? addFunc(map, newData) : removeFunc(map, policyName);
+        }
       });
-    } else {
-      removeProblemInfoPointLayer(map, categoryId);
-    }
+    };
+    //add&remove each layer on change checkbox state (../utils/switchLayers)
+    switchLayers(policyName, categoryId, checked, fetchAndHandleLayer, map);
     layers.setLayer(name, checked);
   };
 
-  const handleCheckboxChangeAuth = (event) => {
-    const { name, checked } = event.target;
-    const policyName = name.split("-")[0];
-    if (checked) {
-      switch (policyName) {
-        case "public_building_point": {
-          fetchAllPublicBuildingPoint().then((data) => {
-            const newData = data.map((obj) => {
-              return {
-                ...obj,
-                policyName: policyName,
-              };
-            });
-            if (map !== null) addPublicBuildingPointLayer(map, newData);
-          });
-          break;
-        }
-
-        case "public_building_polygon": {
-          fetchAllPublicBuildingPolygon().then((data) => {
-            const newData = data.map((obj) => {
-              return {
-                ...obj,
-                policyName: policyName,
-              };
-            });
-            if (map !== null) addPublicBuildingPolygonLayer(map, newData);
-          });
-          break;
-        }
-        default:
-          break;
-      }
-    } else {
-      switch (policyName) {
-        case "public_building_point": {
-          removePublicBuildingPointLayer(map, policyName);
-          break;
-        }
-
-        case "public_building_polygon": {
-          removePublicBuildingPolygonLayer(map, policyName);
-          break;
-        }
-        default:
-          break;
-      }
-    }
-
-    layers.setLayer(name, checked);
-  };
   return (
     <>
       <MapContainer
@@ -169,8 +111,7 @@ function Map() {
       <OffCanvasLayers
         show={show}
         setShow={setShow}
-        handleCheckboxChangeUser={handleCheckboxChangeUser}
-        handleCheckboxChangeAuth={handleCheckboxChangeAuth}
+        handleCheckboxChange={handleCheckboxChange}
       />
     </>
   );

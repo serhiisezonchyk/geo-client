@@ -1,6 +1,6 @@
 import React from 'react'
 
-const UserPopup = ({data}) => {
+const PublicBuildingPointPopup = ({data}) => {
   return (
     <div>
       <p>{data.name}</p>
@@ -8,4 +8,4 @@ const UserPopup = ({data}) => {
   
 }
 
-export default UserPopup;
+export default PublicBuildingPointPopup;

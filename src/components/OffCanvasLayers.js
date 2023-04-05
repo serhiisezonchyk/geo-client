@@ -10,8 +10,7 @@ const OffCanvasLayers = (props) => {
   const { user, layers } = useContext(Context);
 
   const handleClose = () => props.setShow(false);
-  const handleCheckboxChangeUser = (event) => props.handleCheckboxChangeUser(event);
-  const handleCheckboxChangeAuth = (event) => props.handleCheckboxChangeAuth(event);
+  const handleCheckboxChange = (event) => props.handleCheckboxChange(event);
 
   const [categories, setCategories] = useState([]);
   const [policies, setPolicies] = useState([]);
@@ -59,7 +58,7 @@ const OffCanvasLayers = (props) => {
                 id={`${category.name}-${category.id}`}
                 label={category.name}
                 name={`${category.name}-${category.id}`}
-                onChange={handleCheckboxChangeUser}
+                onChange={handleCheckboxChange}
               />
             ))}
           </Form.Group>
@@ -72,7 +71,7 @@ const OffCanvasLayers = (props) => {
                 id={`${policy.name}-${policy.id}`}
                 label={policy.label}
                 name={`${policy.name}-${policy.id}`}
-                onChange={handleCheckboxChangeAuth}
+                onChange={handleCheckboxChange}
               />
             ))}
           </Form.Group>

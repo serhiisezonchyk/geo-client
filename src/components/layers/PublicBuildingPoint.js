@@ -2,7 +2,7 @@ import React from "react";
 import { fetchOne } from "../../http/layers/publicBuildingPointApi";
 import * as ReactDOMServer from "react-dom/server";
 import L, { Icon } from "leaflet";
-import UserPopup from "../popups/UserPopup";
+import PublicBuildingPointPopup from "../popups/PublicBuildingPointPopup";
 
 export const addPublicBuildingPointLayer = (map, geojson) => {
   const layer = L.geoJSON(geojson, {
@@ -38,7 +38,7 @@ function onEachFeature(feature, layer) {
     fetchOne(feature.gid).then((data) => {
       console.log(feature);
       const popupContent = ReactDOMServer.renderToString(
-        <UserPopup data={data[0]} />
+        <PublicBuildingPointPopup data={data[0]} />
       );
       layer.bindPopup(popupContent);
       layer.openPopup();

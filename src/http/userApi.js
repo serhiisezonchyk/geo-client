@@ -1,7 +1,7 @@
 import { $authHost, $host } from "./index";
 import jwt_decode from "jwt-decode";
 
-export const createUser = async (email, password,roleId) => {
+export const createUser = async (email, password, roleId) => {
   const { data } = await $authHost.post("api/user/create", {
     email,
     password,
@@ -29,8 +29,8 @@ export const fetchAllUsers = async () => {
 };
 
 export const deleteUser = async (id) => {
-  const { data } = await $authHost.delete("api/user/" + id);
-  return data;
+  const responce = await $authHost.delete("api/user/" + id);
+  return responce.data;
 };
 
 export const fetchPoliciesForUser = async (id) => {

@@ -1,8 +1,25 @@
 import { $authHost, $host } from "./index";
 
 export const createCategoryProblem = async (category_problem) => {
-  const { data } = await $authHost.post("api/categoryProblem", category_problem);
-  return data;
+  const responce = await $authHost.post("api/categoryProblem", {
+    name: category_problem.name,
+  });
+  return responce.data;
+};
+
+export const updateCategoryProblem = async (category_problem) => {
+  const responce = await $authHost.put(
+    "api/categoryProblem/" + category_problem.id,
+    {
+      name: category_problem.name,
+    }
+  );
+  return responce.data;
+};
+
+export const deleteCategoryProblem = async (id) => {
+  const responce = await $authHost.delete("api/categoryProblem/" + id);
+  return responce.data;
 };
 
 export const fetchAllCategoryProblem = async () => {
@@ -11,6 +28,6 @@ export const fetchAllCategoryProblem = async () => {
 };
 
 export const fetchOneCategoryProblem = async (id) => {
-  const { data } = await $host.get("api/categoryProblem/" + id);
-  return data;
+  const responce = await $host.get("api/categoryProblem/" + id);
+  return responce.data;
 };

@@ -11,16 +11,20 @@ export const fetchAllPolicies = async () => {
 };
 
 export const fetchOneRole = async (id) => {
-  const { data } = await $authHost.get("api/policy/" + id);
-  return data;
+  const responce = await $host.get("api/policy/" + id);
+  return responce.data;
 };
 
-export const updatePolicy = async (id, policy) => {
-    const { data } = await $authHost.put("api/policy/" + id, policy);
-    return data;
-  };
-  
-  export const deletePolicy = async (id) => {
-    const { data } = await $authHost.delete("api/policy/" + id);
-    return data;
-  };
+export const updatePolicy = async (policy) => {
+  const responce = await $authHost.put("api/policy/" + policy.id, {
+    name: policy.name,
+    label: policy.label,
+    description: policy.description,
+  });
+  return responce.data;
+};
+
+export const deletePolicy = async (id) => {
+  const responce = await $authHost.delete("api/policy/" + id);
+  return responce.data;
+};

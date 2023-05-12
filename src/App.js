@@ -8,6 +8,7 @@ import { Context } from "./index";
 import { check, fetchPoliciesForUser } from "./http/userApi";
 import { BrowserRouter } from "react-router-dom";
 import { Spinner } from "react-bootstrap";
+
 const App = observer(() => {
   const { user } = useContext(Context);
   const [loading, setLoading] = useState(true);

@@ -4,7 +4,7 @@ import { Context } from "../index";
 import { fetchOneRole } from "../http/roleApi";
 import { deleteUser } from "../http/userApi";
 
-const UserItem = ({singleUser}) => {
+const UserItem = ({ singleUser }) => {
   const [role, setRole] = useState("");
   useEffect(() => {
     fetchOneRole(singleUser.roleId).then((data) => setRole(data.name));
@@ -13,18 +13,26 @@ const UserItem = ({singleUser}) => {
   return (
     <tr>
       <td>{singleUser.email}</td>
-      <td>{singleUser.password}</td>
+      <td style={{ overflowWrap: "break-word" }} className="overflow-auto">
+        {singleUser.password}
+      </td>
       <td>{role}</td>
       <td>
         <Button
           variant="outline-danger"
           onClick={() => {
-            if (window.confirm("Delete this user?"))
-              deleteUser(singleUser.id);
+            if (window.confirm("Delete this user?")) deleteUser(singleUser.id);
             window.location.reload();
           }}
         >
           Delete
+        </Button>
+        <Button
+          onClick={() => {
+            alert("clicked");
+          }}
+        >
+          Edit
         </Button>
       </td>
     </tr>

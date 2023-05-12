@@ -4,6 +4,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { Context } from "../index";
 import { authRoutes, publicRoutes } from "../routes";
 import { MAP_ROUTE } from "../utils/consts";
+
 const AppRouter = observer(() => {
   const { user } = useContext(Context);
   return (

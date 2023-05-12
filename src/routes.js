@@ -1,11 +1,7 @@
 import SuperuserPage from "./pages/SuperuserPage";
 import Map from "./pages/Map";
 import Authentication from "./pages/Authentication";
-import {
-  SUPERUSER_ROUTE,
-  MAP_ROUTE,
-  LOGIN_ROUTE,
-} from "./utils/consts";
+import { SUPERUSER_ROUTE, MAP_ROUTE, LOGIN_ROUTE } from "./utils/consts";
 
 export const authRoutes = [
   {

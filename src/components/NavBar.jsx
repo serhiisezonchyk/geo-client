@@ -46,12 +46,16 @@ const NavBar = observer(() => {
       <Container>
         <Navbar.Brand href={MAP_ROUTE}>Geoportal</Navbar.Brand>
         {user.isAuth ? (
-          user.user.role == 'superuser' ? (
+          user.user.role == "superuser" ? (
             <Nav.Link className="me-auto" href={SUPERUSER_ROUTE}>
               superuser
             </Nav.Link>
-          ) : (<></>)
-        ) : (<></>)}
+          ) : (
+            <></>
+          )
+        ) : (
+          <></>
+        )}
       </Container>
       <Nav>{authButton()}</Nav>
     </Navbar>

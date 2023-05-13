@@ -101,7 +101,7 @@ const PolicyTable = ({ policies, getAllPolicies }) => {
           float: "right",
         }}
       >
-        Додати категорію
+        Додати права
       </Button>
       <Modal
         className={cl.ant__modal}
@@ -146,7 +146,7 @@ const PolicyTable = ({ policies, getAllPolicies }) => {
       <Table size={"small"} columns={columns} dataSource={policies} />
       <Modal
         className={cl.ant__modal}
-        title="Редагувати категорію"
+        title="Редагувати права"
         open={isEditing}
         cancelText="Відмінити"
         onCancel={() => resetEditing()}

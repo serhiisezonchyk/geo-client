@@ -10,18 +10,20 @@ import UserTable from "../components/UserTable/UserTable";
 import CategoryProblemTable from "../components/CategoryProblemTable/CategoryProblemTable";
 import RoleTable from "../components/RoleTable/RoleTable";
 import PolicyTable from "../components/PolicyTable/PolicyTable";
+import { fetchAllRolePolicy } from "../http/rolePolicyApi";
 
 const SuperuserPage = () => {
   const [users, setUsers] = useState([]);
   const [roles, setRoles] = useState([]);
   const [policies, setPolicies] = useState([]);
   const [categories, setCategories] = useState([]);
-
+  const [rolePolicy, setRolePolicy] = useState([]);
   useEffect(() => {
     getAllCategoryProblem();
     getAllPolicies();
     getAllRoles();
     getAllUsers();
+    getAllRolePolicy();
   }, []);
 
   const getAllCategoryProblem = () => {
@@ -36,9 +38,27 @@ const SuperuserPage = () => {
   const getAllRoles = () => {
     fetchAllRoles().then((data) => setRoles(data));
   };
+  const getAllRolePolicy = () => {
+    fetchAllRolePolicy().then((data) => setRolePolicy(data));
+  };
 
-  console.log("Roles", roles);
-  console.log("Pol", policies);
+  const extendedRoles = roles.map((role) => {
+    return {
+      ...role,
+      policies: new Set(
+        rolePolicy
+          .filter((rolePol) => rolePol.roleId === role.id)
+          .map(
+            (rolePol) =>
+              policies[
+                policies.indexOf(
+                  policies.find((policy) => policy.id === rolePol.policyId)
+                )
+              ].label
+          )
+      ),
+    };
+  });
   return (
     <Container>
       <Tabs>
@@ -52,7 +72,13 @@ const SuperuserPage = () => {
           />
         </Tabs.TabPane>
         <Tabs.TabPane tab="Ролі" key="roles">
-          <RoleTable roles={roles} getAllRoles={getAllRoles} />
+          <RoleTable
+            roles={extendedRoles}
+            getAllRoles={getAllRoles}
+            policies={policies}
+            rolePolicies={rolePolicy}
+            getAllRolePolicies={getAllRolePolicy}
+          />
         </Tabs.TabPane>
         <Tabs.TabPane tab="Права" key="policies">
           <PolicyTable policies={policies} getAllPolicies={getAllPolicies} />

@@ -7,8 +7,7 @@ export const createUser = async (email, password, roleId) => {
     password,
     roleId,
   });
-  localStorage.setItem("token", data.token);
-  return jwt_decode(data.token);
+  return { data };
 };
 
 export const login = async (email, password) => {
@@ -24,8 +23,8 @@ export const check = async () => {
 };
 
 export const fetchAllUsers = async () => {
-  const { data } = await $authHost.get("api/user");
-  return data;
+  const responce = await $authHost.get("api/user/");
+  return responce.data;
 };
 
 export const deleteUser = async (id) => {

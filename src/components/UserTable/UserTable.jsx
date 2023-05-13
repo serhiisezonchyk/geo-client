@@ -78,7 +78,6 @@ const UserTable = ({ users, getAllUsers, roles }) => {
     setIsAdding(false);
     setAddingUser(null);
   };
-  console.log(roles);
   return (
     <div style={{ width: "90vw", margin: "auto" }}>
       <Button

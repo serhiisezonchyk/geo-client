@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { Context } from "../index";
 
-import { Col, Container, Row } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import { Tabs } from "antd";
 import { fetchAllUsers } from "../http/userApi";
 import { fetchAllRoles } from "../http/roleApi";
@@ -11,8 +12,11 @@ import CategoryProblemTable from "../components/CategoryProblemTable/CategoryPro
 import RoleTable from "../components/RoleTable/RoleTable";
 import PolicyTable from "../components/PolicyTable/PolicyTable";
 import { fetchAllRolePolicy } from "../http/rolePolicyApi";
+import { Navigate } from "react-router-dom";
 
 const SuperuserPage = () => {
+  const { user } = useContext(Context);
+
   const [users, setUsers] = useState([]);
   const [roles, setRoles] = useState([]);
   const [policies, setPolicies] = useState([]);
@@ -41,6 +45,8 @@ const SuperuserPage = () => {
   const getAllRolePolicy = () => {
     fetchAllRolePolicy().then((data) => setRolePolicy(data));
   };
+
+  if (user.user.role !== "superuser") return <Navigate to="/" />;
 
   const extendedRoles = roles.map((role) => {
     return {

@@ -34,3 +34,11 @@
   bottom: 20px;
   right: 10px;
 }
+
+/* popup */
+.leaflet-popup-content {
+  margin: 25px 0px 0px 0px !important;
+}
+.leaflet-popup-content-wrapper {
+  border-radius: 6px !important;
+}

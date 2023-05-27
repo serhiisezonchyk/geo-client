@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../index";
 
 import { Container } from "react-bootstrap";
-import { Tabs } from "antd";
+import { Tabs, Layout } from "antd";
 import { fetchAllUsers } from "../http/userApi";
 import { fetchAllRoles } from "../http/roleApi";
 import { fetchAllPolicies } from "../http/policyApi";
@@ -13,15 +13,16 @@ import RoleTable from "../components/RoleTable/RoleTable";
 import PolicyTable from "../components/PolicyTable/PolicyTable";
 import { fetchAllRolePolicy } from "../http/rolePolicyApi";
 import { Navigate } from "react-router-dom";
+import NavBar from "../components/NavBar";
 
 const SuperuserPage = () => {
   const { user } = useContext(Context);
-
   const [users, setUsers] = useState([]);
   const [roles, setRoles] = useState([]);
   const [policies, setPolicies] = useState([]);
   const [categories, setCategories] = useState([]);
   const [rolePolicy, setRolePolicy] = useState([]);
+
   useEffect(() => {
     getAllCategoryProblem();
     getAllPolicies();
@@ -66,31 +67,34 @@ const SuperuserPage = () => {
     };
   });
   return (
-    <Container>
-      <Tabs>
-        <Tabs.TabPane tab="Користувачі" key="user">
-          <UserTable users={users} getAllUsers={getAllUsers} roles={roles} />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="Категорії" key="categories">
-          <CategoryProblemTable
-            categories={categories}
-            getAllCategoryProblem={getAllCategoryProblem}
-          />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="Ролі" key="roles">
-          <RoleTable
-            roles={extendedRoles}
-            getAllRoles={getAllRoles}
-            policies={policies}
-            rolePolicies={rolePolicy}
-            getAllRolePolicies={getAllRolePolicy}
-          />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="Права" key="policies">
-          <PolicyTable policies={policies} getAllPolicies={getAllPolicies} />
-        </Tabs.TabPane>
-      </Tabs>
-    </Container>
+    <Layout style={{ height: "100%", width: "100%", overflow: "auto" }}>
+      <NavBar />
+      <Container>
+        <Tabs>
+          <Tabs.TabPane tab="Користувачі" key="user">
+            <UserTable users={users} getAllUsers={getAllUsers} roles={roles} />
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="Категорії" key="categories">
+            <CategoryProblemTable
+              categories={categories}
+              getAllCategoryProblem={getAllCategoryProblem}
+            />
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="Ролі" key="roles">
+            <RoleTable
+              roles={extendedRoles}
+              getAllRoles={getAllRoles}
+              policies={policies}
+              rolePolicies={rolePolicy}
+              getAllRolePolicies={getAllRolePolicy}
+            />
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="Права" key="policies">
+            <PolicyTable policies={policies} getAllPolicies={getAllPolicies} />
+          </Tabs.TabPane>
+        </Tabs>
+      </Container>
+    </Layout>
   );
 };
 

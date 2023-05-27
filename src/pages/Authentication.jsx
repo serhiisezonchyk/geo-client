@@ -1,13 +1,15 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { Context } from "../index";
 import { observer } from "mobx-react-lite";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Layout, Typography } from "antd";
+import { useNavigate } from "react-router-dom";
 import { Container, Form, Card, Button } from "react-bootstrap";
 
 import { fetchPoliciesForUser, login } from "../http/userApi";
 import { MAP_ROUTE } from "../utils/consts";
 import { useForm } from "react-hook-form";
 import { Modal } from "antd";
+import NavBar from "../components/NavBar";
 
 const Authentication = observer(() => {
   const { user } = useContext(Context);
@@ -42,52 +44,71 @@ const Authentication = observer(() => {
       navigate(MAP_ROUTE);
     } catch (error) {
       Modal.error({
-        title: 'Помилка авторизації',
-        content: 'Неправльний логін або пароль',
+        title: "Помилка авторизації",
+        content: "Неправльний логін або пароль",
       });
     }
   };
 
   return (
-    <Container
-      className="d-flex justify-content-center align-items-center "
-      style={{ height: window.innerHeight - 59, width: window.innerWidth / 2 }}
+    <Layout
+      style={{ height: "100%", width: "100%", backgroundColor: "transparent" }}
     >
-      <Card
-        style={{ width: window.innerWidth - window.innerWidth / 4 }}
-        className="p-5 shadow p-3 mb-5 bg-body rounded"
+      <NavBar />
+      <Container
+        className="d-flex justify-content-center align-items-center "
+        style={{
+          height: window.innerHeight - 59,
+          width: "70vw",
+        }}
       >
-        <h2 className="m-auto">Авторизація</h2>
-        <Form className="d-flex flex-column" onSubmit={handleSubmit(onSubmit)}>
-          <div className="mb-3">
-            <Form.Control
-              type="text"
-              placeholder="Email..."
-              className={Boolean(errors.email?.message) ? "is-invalid" : ""}
-              {...register("email", {
-                required: "Введіть email",
-              })}
-            />
-            <span className="text-danger pb-3">{errors.email?.message}</span>
-          </div>
-          <div>
-            <Form.Control
-              type="password"
-              placeholder="Пароль..."
-              className={Boolean(errors.login?.message) ? "is-invalid" : ""}
-              {...register("password", {
-                required: "Введіть пароль.",
-              })}
-            />
-            <span className="text-danger">{errors.password?.message}</span>
-          </div>
+        <Card
+          style={{ width: window.innerWidth - window.innerWidth / 4 }}
+          className="shadow-lg p-3 mb-5 bg-white rounded border-0"
+        >
+          <Typography.Text strong type="secondary" className={"menu-title"}>
+            Авторизація
+          </Typography.Text>
+          <Form
+            className="d-flex my-3 gap-3 flex-column"
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <Form.Group className="mb-3">
+              <Form.Control
+                type="text"
+                placeholder="Email..."
+                rules={[{ required: true }]}
+                className={Boolean(errors.email?.message) ? "is-invalid" : ""}
+                {...register("email", {
+                  required: "Введіть email",
+                })}
+              />
+              <Form.Text className="text-danger pb-3">
+                {errors.email?.message}
+              </Form.Text>
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Control
+                type="password"
+                placeholder="Пароль..."
+                rules={[{ required: true }]}
+                className={Boolean(errors.login?.message) ? "is-invalid" : ""}
+                {...register("password", {
+                  required: "Введіть пароль",
+                })}
+              />
+              <Form.Text className="text-danger pb-3">
+                {errors.password?.message}
+              </Form.Text>
+            </Form.Group>
 
-          <Button className="mt-3" variant="outline-dark" type="submit">
-            Увійти
-          </Button>
-        </Form>
-      </Card>
-    </Container>
+            <Button class="btn btn-outline-primary mx-auto" type="submit">
+              Увійти
+            </Button>
+          </Form>
+        </Card>
+      </Container>
+    </Layout>
   );
 });
 

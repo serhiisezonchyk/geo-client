@@ -1,4 +1,4 @@
-import { Button, Modal, Table, Input } from "antd";
+import { Button, Modal, Table } from "antd";
 import { useState } from "react";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import {
@@ -6,11 +6,12 @@ import {
   deleteCategoryProblem,
   updateCategoryProblem,
 } from "../../http/categoryProblemApi";
+import CategoryProblemAddingModal from "./CategoryProblemAddingModal";
+import CategoryProblemEditingModal from "./CategoryProblemEditingModal";
 
 const CategoryProblemTable = ({ categories, getAllCategoryProblem }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [isAdding, setIsAdding] = useState(false);
-  const [addingCategory, setAddingCategory] = useState(null);
+  const [isEditingModalOpen, setIsEditingModalOpen] = useState(false);
+  const [isAddingModalOpen, setIsAddingModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
 
   const confirmDeleteCategory = (record) => {
@@ -56,40 +57,36 @@ const CategoryProblemTable = ({ categories, getAllCategoryProblem }) => {
     deleteCategoryProblem(record.id).then(() => getAllCategoryProblem());
   };
 
-  const onEditCategory = () => {
-    if (editingCategory !== null) {
-      if (editingCategory.name.length !== 0)
-        updateCategoryProblem(editingCategory).then(() =>
-          getAllCategoryProblem()
-        );
-    }
-    resetEditing();
+  const onEditCategory = (values) => {
+    if (values !== null)
+      updateCategoryProblem({ id: editingCategory.id, name: values.name }).then(
+        () => getAllCategoryProblem()
+      );
+    handleEditModalClose();
   };
-  const onAddCategory = () => {
-    if (addingCategory !== null) {
-      if (addingCategory.name.length !== 0)
-        createCategoryProblem(addingCategory).then(() =>
-          getAllCategoryProblem()
-        );
-    }
-    resetAdding();
+  const onAddCategory = (values) => {
+    if (values !== null)
+      createCategoryProblem({ name: values.name }).then(() =>
+        getAllCategoryProblem()
+      );
+    handleAddModalClose();
   };
   const setEditing = (record) => {
-    setIsEditing(true);
+    setIsEditingModalOpen(true);
     setEditingCategory({ ...record });
   };
-  const resetAdding = () => {
-    setIsAdding(false);
-    setAddingCategory(null);
-  };
-  const resetEditing = () => {
-    setIsEditing(false);
+
+  const handleEditModalClose = () => {
+    setIsEditingModalOpen(false);
     setEditingCategory(null);
+  };
+  const handleAddModalClose = () => {
+    setIsAddingModalOpen(false);
   };
   return (
     <div style={{ width: "50vw", margin: "auto" }}>
       <Button
-        onClick={() => setIsAdding(true)}
+        onClick={() => setIsAddingModalOpen(true)}
         type="primary"
         style={{
           marginBottom: 16,
@@ -98,49 +95,20 @@ const CategoryProblemTable = ({ categories, getAllCategoryProblem }) => {
       >
         Додати категорію
       </Button>
-      <Modal
-        title="Додати категорію"
-        open={isAdding}
-        allowClear={false}
-        cancelText="Відмінити"
-        onCancel={() => resetAdding()}
-        okText="Зберегти"
-        onOk={() => {
-          onAddCategory();
-        }}
-      >
-        <Input
-          placeholder="Назва"
-          value={addingCategory?.name}
-          onChange={(e) => {
-            setAddingCategory((prev) => {
-              return { ...prev, name: e.target.value };
-            });
-          }}
-        ></Input>
-      </Modal>
+      {isAddingModalOpen && (
+        <CategoryProblemAddingModal
+          onClose={handleAddModalClose}
+          onAddCategory={onAddCategory}
+        />
+      )}
       <Table size={"small"} columns={columns} dataSource={categories} />
-      <Modal
-        title="Редагувати категорію"
-        open={isEditing}
-        cancelText="Відмінити"
-        onCancel={() => resetEditing()}
-        okText="Зберегти"
-        onOk={() => {
-          onEditCategory();
-          resetEditing();
-        }}
-      >
-        <Input
-          placeholder="Назва"
-          value={editingCategory?.name}
-          onChange={(e) => {
-            setEditingCategory((prev) => {
-              return { ...prev, name: e.target.value };
-            });
-          }}
-        ></Input>
-      </Modal>
+      {isEditingModalOpen && (
+        <CategoryProblemEditingModal
+          category={editingCategory}
+          onClose={handleEditModalClose}
+          onEditCategory={onEditCategory}
+        />
+      )}
     </div>
   );
 };

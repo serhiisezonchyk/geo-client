@@ -31,12 +31,11 @@ export const removePublicBuildingPointLayer = (map, overlayName) => {
 function onEachFeature(feature, layer) {
   const customIcon = new Icon({
     iconUrl: "https://cdn-icons-png.flaticon.com/512/9438/9438201.png",
-    iconSize: [30, 30],
+    iconSize: [20, 20],
   });
   layer.setIcon(customIcon);
   layer.on("click", () => {
     fetchOne(feature.gid).then((data) => {
-      console.log(feature);
       const popupContent = ReactDOMServer.renderToString(
         <PublicBuildingPointPopup data={data[0]} />
       );

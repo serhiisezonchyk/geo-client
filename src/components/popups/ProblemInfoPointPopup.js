@@ -2,6 +2,7 @@ import React from "react";
 import { Card } from "react-bootstrap";
 
 const ProblemInfoPointPopup = ({ data }) => {
+  console.log("data.img", process.env.REACT_APP_API_URL);
   return (
     <Card border="0">
       {data.img ? (
@@ -17,7 +18,9 @@ const ProblemInfoPointPopup = ({ data }) => {
         <Card.Title style={{ fontSize: "15px" }}>
           {data.category_problem.name} № {data.id}
         </Card.Title>
-        <Card.Text style={{ marginTop: "0px" }}>{data.description===null?data.description:"Опис відсутній."}</Card.Text>
+        <Card.Text style={{ marginTop: "0px" }}>
+          {data.description === null ? data.description : "Опис відсутній."}
+        </Card.Text>
       </Card.Body>
       <Card.Footer>
         {data.createdAt === data.updatedAt ? (

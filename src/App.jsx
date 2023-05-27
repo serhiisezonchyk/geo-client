@@ -1,5 +1,3 @@
-import Map from "./pages/Map";
-import NavBar from "./components/NavBar";
 import AppRouter from "./components/AppRouter";
 
 import React, { useContext, useEffect, useState } from "react";
@@ -18,10 +16,11 @@ const App = observer(() => {
       .then((data) => {
         user.setUser(data);
         user.setIsAuth(true);
-        fetchPoliciesForUser(data.id).then((policies)=>{
+        fetchPoliciesForUser(data.id).then((policies) => {
           user.setPolicies(policies);
-        })
-      }).catch(()=>{
+        });
+      })
+      .catch(() => {
         user.setUser({});
         user.setIsAuth(false);
         user.setPolicies([]);
@@ -42,8 +41,7 @@ const App = observer(() => {
 
   return (
     <BrowserRouter>
-      <NavBar />
-      <AppRouter/>
+      <AppRouter />
     </BrowserRouter>
   );
 });

@@ -1,11 +1,11 @@
-import React from 'react'
+import React from "react";
 
-const PublicBuildingPointPopup = ({data}) => {
+const PublicBuildingPointPopup = ({ data }) => {
   return (
     <div>
       <p>{data.name}</p>
-    </div>)
-  
-}
+    </div>
+  );
+};
 
 export default PublicBuildingPointPopup;

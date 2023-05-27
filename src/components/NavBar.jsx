@@ -1,64 +1,17 @@
-import { observer } from "mobx-react-lite";
-import React, { useContext } from "react";
-import { Container, Nav, Navbar, Button } from "react-bootstrap";
-import { Context } from "../index";
+import React from "react";
+
 import { useNavigate } from "react-router-dom";
+import { LeftOutlined } from "@ant-design/icons";
+import { Header } from "antd/es/layout/layout";
+import { MAP_ROUTE } from "../utils/consts";
 
-import { SUPERUSER_ROUTE, LOGIN_ROUTE, MAP_ROUTE } from "../utils/consts";
-
-const NavBar = observer(() => {
-  const { user, layers } = useContext(Context);
+const NavBar = () => {
   const navigate = useNavigate();
-  const authButton = () => {
-    if (user.isAuth) {
-      return (
-        <Button
-          key={user.user.id}
-          variant="outline-danger"
-          style={{ marginRight: 5, marginBottom: 5 }}
-          onClick={() => {
-            user.setUser({});
-            user.setIsAuth(false);
-            user.setPolicies([]);
-            layers.setLayers([]);
-            localStorage.removeItem("token");
-            localStorage.clear();
-          }}
-        >
-          Вийти
-        </Button>
-      );
-    } else {
-      return (
-        <Button
-          variant="outline-success"
-          style={{ marginRight: 5, marginBottom: 5 }}
-          onClick={() => navigate(LOGIN_ROUTE)}
-        >
-          Увійти
-        </Button>
-      );
-    }
-  };
 
   return (
-    <Navbar bg="light" variant="light">
-      <Container>
-        <Navbar.Brand href={MAP_ROUTE}>Geoportal</Navbar.Brand>
-        {user.isAuth ? (
-          user.user.role == "superuser" ? (
-            <Nav.Link className="me-auto" href={SUPERUSER_ROUTE}>
-              superuser
-            </Nav.Link>
-          ) : (
-            <></>
-          )
-        ) : (
-          <></>
-        )}
-      </Container>
-      <Nav>{authButton()}</Nav>
-    </Navbar>
+    <Header style={{ backgroundColor: "transparent", height: "10vh" }}>
+      <LeftOutlined onClick={() => navigate(MAP_ROUTE)} />
+    </Header>
   );
-});
+};
 export default NavBar;

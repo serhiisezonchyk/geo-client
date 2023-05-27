@@ -1,11 +1,11 @@
 /* root size */
-#root{
+#root {
   height: 100vh;
 }
 
 /* map size */
-.leaflet-container{
-  height: 92.33vh;
+.leaflet-container {
+  height: 100vh;
 }
 
 /* loader position */
@@ -37,8 +37,41 @@
 
 /* popup */
 .leaflet-popup-content {
-  margin: 25px 0px 0px 0px !important;
+  margin: 10px !important;
 }
 .leaflet-popup-content-wrapper {
   border-radius: 6px !important;
+  padding: 10px;
+}
+.collapsed-menu-title {
+  transform: rotate(-90deg);
+  transition-duration: 0.2s;
+  font-size: 16px;
+}
+.menu-title {
+  transform: rotate(0deg);
+  transition-duration: 0.2s;
+  font-size: 26px;
+  text-align: center;
+}
+
+.login-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+  width: 100px;
+  background-color: white;
+  box-shadow: 0 1px 10px 0 rgba(38, 38, 38, 0.5);
+}
+
+.login-button:hover {
+  background-color: white !important;
+  box-shadow: 0px 0px 30px rgba(250, 173, 20, 0.7);
+}
+.leaflet-control-zoom {
+  position: absolute;
+  top: 50px;
+  right: 10px;
+  z-index: 1000;
 }

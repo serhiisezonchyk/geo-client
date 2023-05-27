@@ -32,7 +32,7 @@ export const removeProblemInfoPointLayer = (map, overlayName) => {
 function onEachFeature(feature, layer) {
   const customIcon = new Icon({
     iconUrl: feature.category_problem.layer_img,
-    iconSize: [30, 30],
+    iconSize: [20, 20],
   });
   layer.setIcon(customIcon);
   layer.on("click", () => {

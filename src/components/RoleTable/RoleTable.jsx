@@ -2,13 +2,9 @@ import { Button, Modal, Table, Input, Tag, Select } from "antd";
 import { useState } from "react";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { createRole, deleteRole, updateRole } from "../../http/roleApi";
-import {
-  createRolePolicy,
-  deleteRolePolicy,
-  updateRolePolicy,
-} from "../../http/rolePolicyApi";
-import cl from "./RoleTable.module.css";
-const { Option } = Select;
+import { createRolePolicy, deleteRolePolicy } from "../../http/rolePolicyApi";
+import RoleAddingModal from "./RoleAddingModal";
+import RoleEditingModal from "./RoleEditingModal";
 
 const RoleTable = ({
   roles,
@@ -17,10 +13,9 @@ const RoleTable = ({
   rolePolicies,
   getAllRolePolicies,
 }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [isAdding, setIsAdding] = useState(false);
+  const [isEditingModalOpen, setIsEditingModalOpen] = useState(false);
+  const [isAddingModalOpen, setIsAddingModalOpen] = useState(false);
   const [editingRole, setEditingRole] = useState(null);
-  const [addingRole, setAddingRole] = useState(null);
   const [chosenPolicy, setChosenPolicy] = useState(undefined);
 
   const confirmDeleteRole = (record) => {
@@ -58,18 +53,21 @@ const RoleTable = ({
       key: "action",
       width: "10%",
       render: (record) => {
-        return (
-          <>
-            <EditOutlined
-              onClick={() => setEditing(record)}
-              style={{ color: "blue" }}
-            />
-            <DeleteOutlined
-              onClick={() => confirmDeleteRole(record)}
-              style={{ color: "red", marginLeft: 12 }}
-            />
-          </>
-        );
+        if (record.name !== "superuser")
+          return (
+            <>
+              <EditOutlined
+                onClick={() => {
+                  setEditing(record);
+                }}
+                style={{ color: "blue" }}
+              />
+              <DeleteOutlined
+                onClick={() => confirmDeleteRole(record)}
+                style={{ color: "red", marginLeft: 12 }}
+              />
+            </>
+          );
       },
     },
   ];
@@ -95,44 +93,41 @@ const RoleTable = ({
 
   const onAddRolePolicy = (policy, role) => {
     policy.map((idPolicy) => {
-      createRolePolicy({ roleId: role.id, policyId: idPolicy }).then(() =>
-        getAllRolePolicies()
-      );
+      createRolePolicy({ roleId: role.id, policyId: idPolicy }).then(() => {
+        getAllRolePolicies();
+      });
     });
   };
-  const onEditRole = () => {
-    const actualPolicies = Array.from(editingRole.policies).map(
-      (pol) => (pol = policies.filter((el) => el.label === pol)[0].id)
-    );
-    if (editingRole !== null) {
-      if (editingRole.name.length !== 0 && chosenPolicy.length !== 0)
-        updateRole(editingRole).then(() => {
+  const onEditRole = (values) => {
+    if (values !== null) {
+      if (values.name.length !== 0 && values.policy.length !== 0)
+        updateRole({ id: editingRole.id, name: values.name }).then(() => {
           getAllRoles();
-          actualPolicies
-            .filter((el) => chosenPolicy.indexOf(el) < 0)
+          chosenPolicy
+            .filter((el) => values.policy.indexOf(el) < 0)
             .map((el) => onDeletePolicy(editingRole.id, el));
           onAddRolePolicy(
-            chosenPolicy.filter((el) => actualPolicies.indexOf(el) < 0),
+            values.policy.filter((el) => chosenPolicy.indexOf(el) < 0),
             editingRole
           );
         });
     }
-    resetEditing();
+    handleEditModalClose();
   };
-  const onAddRole = () => {
-    if (addingRole !== null && chosenPolicy !== undefined) {
-      if (addingRole.name.length !== 0) {
-        createRole(addingRole).then((data) => {
+  const onAddRole = (values) => {
+    if (values !== null) {
+      if (values.name.length !== 0) {
+        createRole({ name: values.name }).then((data) => {
           getAllRoles();
-          onAddRolePolicy(chosenPolicy, data);
+          onAddRolePolicy(values.policy, data);
         });
       }
     }
-
-    resetAdding();
+    handleAddModalClose();
   };
+
   const setEditing = (record) => {
-    setIsEditing(true);
+    setIsEditingModalOpen(true);
     setEditingRole({ ...record });
     setChosenPolicy(
       Array.from(record.policies).map(
@@ -140,21 +135,19 @@ const RoleTable = ({
       )
     );
   };
-  const resetAdding = () => {
-    setIsAdding(false);
-    setAddingRole(null);
-    setChosenPolicy(undefined);
-  };
-  const resetEditing = () => {
-    setIsEditing(false);
+
+  const handleEditModalClose = () => {
+    setIsEditingModalOpen(false);
     setEditingRole(null);
     setChosenPolicy(undefined);
   };
-
+  const handleAddModalClose = () => {
+    setIsAddingModalOpen(false);
+  };
   return (
     <div style={{ width: "70vw", margin: "auto" }}>
       <Button
-        onClick={() => setIsAdding(true)}
+        onClick={() => setIsAddingModalOpen(true)}
         type="primary"
         style={{
           marginBottom: 16,
@@ -163,82 +156,25 @@ const RoleTable = ({
       >
         Додати роль
       </Button>
-      <Modal
-        title="Додати роль"
-        open={isAdding}
-        className={cl.ant__modal}
-        cancelText="Відмінити"
-        onCancel={() => resetAdding()}
-        okText="Зберегти"
-        onOk={() => {
-          onAddRole();
-        }}
-      >
-        <Input
-          placeholder="Назва"
-          value={addingRole?.name}
-          onChange={(e) => {
-            setAddingRole((prev) => {
-              return { ...prev, name: e.target.value };
-            });
-          }}
-        ></Input>
-        <Select
-          showSearch
-          mode="tags"
-          value={chosenPolicy}
-          placeholder="Виберіть права"
-          style={{ width: "100%" }}
-          onChange={(e) => {
-            setChosenPolicy(e);
-          }}
-        >
-          {policies.map((el) => (
-            <Option value={el.id} key={el.id}>
-              {el.label}
-            </Option>
-          ))}
-        </Select>
-      </Modal>
+
+      {isAddingModalOpen && (
+        <RoleAddingModal
+          onClose={handleAddModalClose}
+          onAddRole={onAddRole}
+          policies={policies}
+        />
+      )}
       <Table size={"small"} columns={columns} dataSource={roles} />
-      <Modal
-        title="Редагувати роль"
-        open={isEditing}
-        className={cl.ant__modal}
-        cancelText="Відмінити"
-        onCancel={() => resetEditing()}
-        okText="Зберегти"
-        onOk={() => {
-          onEditRole();
-          resetEditing();
-        }}
-      >
-        <Input
-          placeholder="Назва"
-          value={editingRole?.name}
-          onChange={(e) => {
-            setEditingRole((prev) => {
-              return { ...prev, name: e.target.value };
-            });
-          }}
-        ></Input>
-        <Select
-          showSearch
-          mode="tags"
-          value={chosenPolicy}
-          placeholder="Виберіть права"
-          style={{ width: "100%" }}
-          onChange={(e) => {
-            setChosenPolicy(e);
-          }}
-        >
-          {policies.map((el) => (
-            <Option value={el.id} key={el.id}>
-              {el.label}
-            </Option>
-          ))}
-        </Select>
-      </Modal>
+
+      {isEditingModalOpen && (
+        <RoleEditingModal
+          role={editingRole}
+          chosenPolicy={chosenPolicy}
+          onClose={handleEditModalClose}
+          onEditRole={onEditRole}
+          policies={policies}
+        />
+      )}
     </div>
   );
 };

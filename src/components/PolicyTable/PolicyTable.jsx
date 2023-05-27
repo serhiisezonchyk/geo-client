@@ -1,14 +1,13 @@
-import { Button, Modal, Table, Input } from "antd";
+import { Button, Modal, Table } from "antd";
 import { useState } from "react";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { createPolicy, deletePolicy, updatePolicy } from "../../http/policyApi";
-import cl from "./PolicyTable.module.css";
-const { TextArea } = Input;
+import PolicyEditingModal from "./PolicyEditingModal";
+import PolicyAddingModal from "./PolicyAddingModal";
 
 const PolicyTable = ({ policies, getAllPolicies }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [isAdding, setIsAdding] = useState(false);
-  const [addingPolicy, setAddingPolicy] = useState(null);
+  const [isEditingModalOpen, setIsEditingModalOpen] = useState(false);
+  const [isAddingModalOpen, setIsAddingModalOpen] = useState(false);
   const [editingPolicy, setEditingPolicy] = useState(null);
 
   const confirmDeletePolicy = (record) => {
@@ -65,36 +64,42 @@ const PolicyTable = ({ policies, getAllPolicies }) => {
     deletePolicy(record.id).then(() => getAllPolicies());
   };
 
-  const onEditPolicy = () => {
-    if (editingPolicy !== null) {
-      if (editingPolicy.name.length !== 0 && addingPolicy.label.length !== 0)
-        updatePolicy(editingPolicy).then(() => getAllPolicies());
-    }
-    resetEditing();
+  const onEditPolicy = (values) => {
+    console.log("val", values);
+    if (values !== null)
+      updatePolicy({
+        id: editingPolicy.id,
+        name: values.name,
+        label: values.label,
+        description: values.description,
+      }).then(() => getAllPolicies());
+
+    handleEditModalClose();
   };
-  const onAddPolicy = () => {
-    if (addingPolicy !== null) {
-      if (addingPolicy.name.length !== 0 && addingPolicy.label.length !== 0)
-        createPolicy(addingPolicy).then(() => getAllPolicies());
-    }
-    resetAdding();
+  const onAddPolicy = (values) => {
+    if (values !== null)
+      createPolicy({
+        name: values.name,
+        label: values.label,
+        description: values.description,
+      }).then(() => getAllPolicies());
+    handleAddModalClose();
   };
   const setEditing = (record) => {
-    setIsEditing(true);
+    setIsEditingModalOpen(true);
     setEditingPolicy({ ...record });
   };
-  const resetAdding = () => {
-    setIsAdding(false);
-    setAddingPolicy(null);
-  };
-  const resetEditing = () => {
-    setIsEditing(false);
+  const handleEditModalClose = () => {
+    setIsEditingModalOpen(false);
     setEditingPolicy(null);
+  };
+  const handleAddModalClose = () => {
+    setIsAddingModalOpen(false);
   };
   return (
     <div style={{ width: "80vw", margin: "auto" }}>
       <Button
-        onClick={() => setIsAdding(true)}
+        onClick={() => setIsAddingModalOpen(true)}
         type="primary"
         style={{
           marginBottom: 16,
@@ -103,87 +108,20 @@ const PolicyTable = ({ policies, getAllPolicies }) => {
       >
         Додати права
       </Button>
-      <Modal
-        className={cl.ant__modal}
-        title="Додати права"
-        open={isAdding}
-        allowClear={false}
-        cancelText="Відмінити"
-        onCancel={() => resetAdding()}
-        okText="Зберегти"
-        onOk={() => {
-          onAddPolicy();
-        }}
-      >
-        <Input
-          placeholder="Мітка"
-          value={addingPolicy?.label}
-          onChange={(e) => {
-            setAddingPolicy((prev) => {
-              return { ...prev, label: e.target.value };
-            });
-          }}
-        ></Input>
-        <Input
-          placeholder="Назва"
-          value={addingPolicy?.name}
-          onChange={(e) => {
-            setAddingPolicy((prev) => {
-              return { ...prev, name: e.target.value };
-            });
-          }}
-        ></Input>
-        <TextArea
-          placeholder="Опис"
-          value={addingPolicy?.description}
-          onChange={(e) => {
-            setAddingPolicy((prev) => {
-              return { ...prev, description: e.target.value };
-            });
-          }}
-        ></TextArea>
-      </Modal>
+      {isAddingModalOpen && (
+        <PolicyAddingModal
+          onClose={handleAddModalClose}
+          onAddPolicy={onAddPolicy}
+        />
+      )}
       <Table size={"small"} columns={columns} dataSource={policies} />
-      <Modal
-        className={cl.ant__modal}
-        title="Редагувати права"
-        open={isEditing}
-        cancelText="Відмінити"
-        onCancel={() => resetEditing()}
-        okText="Зберегти"
-        onOk={() => {
-          onEditPolicy();
-          resetEditing();
-        }}
-      >
-        <Input
-          placeholder="Мітка"
-          value={editingPolicy?.label}
-          onChange={(e) => {
-            setEditingPolicy((prev) => {
-              return { ...prev, label: e.target.value };
-            });
-          }}
-        ></Input>
-        <Input
-          placeholder="Назва"
-          value={editingPolicy?.name}
-          onChange={(e) => {
-            setEditingPolicy((prev) => {
-              return { ...prev, name: e.target.value };
-            });
-          }}
-        ></Input>
-        <TextArea
-          placeholder="Опис"
-          value={editingPolicy?.description}
-          onChange={(e) => {
-            setEditingPolicy((prev) => {
-              return { ...prev, description: e.target.value };
-            });
-          }}
-        ></TextArea>
-      </Modal>
+      {isEditingModalOpen && (
+        <PolicyEditingModal
+          policy={editingPolicy}
+          onClose={handleEditModalClose}
+          onEditPolicy={onEditPolicy}
+        />
+      )}
     </div>
   );
 };

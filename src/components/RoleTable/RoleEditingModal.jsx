@@ -72,8 +72,7 @@ const RoleEditingModal = ({
           ]}
         >
           <Select
-            showSearch
-            mode="tags"
+            mode="multiple"
             placeholder="Виберіть права"
             style={{ width: "100%" }}
           >

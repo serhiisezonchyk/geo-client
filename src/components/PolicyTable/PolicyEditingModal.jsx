@@ -43,18 +43,6 @@ const PolicyEditingModal = ({ policy, onClose, onEditPolicy }) => {
         }}
       >
         <Form.Item
-          label="Назва"
-          name="name"
-          rules={[
-            {
-              required: true,
-              message: "Введіть назву!",
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
           label="Мітка"
           name="label"
           rules={[
@@ -65,6 +53,9 @@ const PolicyEditingModal = ({ policy, onClose, onEditPolicy }) => {
           ]}
         >
           <Input />
+        </Form.Item>
+        <Form.Item label="Назва" name="name">
+          <Input disabled={true} />
         </Form.Item>
         <Form.Item
           label="Опис"

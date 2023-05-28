@@ -1,5 +1,7 @@
-import { Modal, Input } from "antd";
+import { Modal, Input, Select } from "antd";
 import { Form } from "antd";
+import { policyNames } from "../../utils/policyNames";
+const { Option } = Select;
 
 const PolicyAddingModal = ({ onClose, onAddPolicy }) => {
   const [form] = Form.useForm();
@@ -35,18 +37,6 @@ const PolicyAddingModal = ({ onClose, onAddPolicy }) => {
         }}
       >
         <Form.Item
-          label="Назва"
-          name="name"
-          rules={[
-            {
-              required: true,
-              message: "Введіть назву!",
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
           label="Мітка"
           name="label"
           rules={[
@@ -57,6 +47,24 @@ const PolicyAddingModal = ({ onClose, onAddPolicy }) => {
           ]}
         >
           <Input />
+        </Form.Item>
+        <Form.Item
+          label="Назва"
+          name="name"
+          rules={[
+            {
+              required: true,
+              message: "Введіть назву!",
+            },
+          ]}
+        >
+          <Select mode="multiple" style={{ width: "100%" }}>
+            {policyNames.map((el) => (
+              <Option value={el} key={el}>
+                {el}
+              </Option>
+            ))}
+          </Select>
         </Form.Item>
         <Form.Item
           label="Опис"

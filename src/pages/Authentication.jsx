@@ -64,7 +64,7 @@ const Authentication = observer(() => {
       >
         <Card
           style={{ width: window.innerWidth - window.innerWidth / 4 }}
-          className="shadow-lg p-3 mb-5 bg-white rounded border-0"
+          className="shadow-lg p-5 mb-5 bg-white rounded border-0"
         >
           <Typography.Text strong type="secondary" className={"menu-title"}>
             Авторизація
@@ -92,7 +92,9 @@ const Authentication = observer(() => {
                 type="password"
                 placeholder="Пароль..."
                 rules={[{ required: true }]}
-                className={Boolean(errors.login?.message) ? "is-invalid" : ""}
+                className={
+                  Boolean(errors.password?.message) ? "is-invalid" : ""
+                }
                 {...register("password", {
                   required: "Введіть пароль",
                 })}

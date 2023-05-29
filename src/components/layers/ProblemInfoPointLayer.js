@@ -58,7 +58,9 @@ function onEachFeature(feature, layer) {
     const map = layer._map;
     const baseLayerContainer = map
       .getPane("tilePane")
-      .querySelector(".leaflet-layer");
-    baseLayerContainer.classList.remove("blur");
+      ?.querySelector(".leaflet-layer");
+    if (baseLayerContainer) {
+      baseLayerContainer.classList.remove("blur");
+    }
   });
 }

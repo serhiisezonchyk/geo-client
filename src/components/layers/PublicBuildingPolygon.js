@@ -21,7 +21,9 @@ export const removePublicBuildingPolygonLayer = (map, overlayName) => {
             if (
               overlay.feature.geometry.policyName.toString() === overlayName
             ) {
-              map.removeLayer(overlay);
+              if (map.hasLayer(overlay)) {
+                map.removeLayer(overlay);
+              }
             }
         });
       }
@@ -54,8 +56,10 @@ function onEachFeature(feature, layer) {
     const map = layer._map;
     const baseLayerContainer = map
       .getPane("tilePane")
-      .querySelector(".leaflet-layer");
-    baseLayerContainer.classList.remove("blur");
+      ?.querySelector(".leaflet-layer");
+    if (baseLayerContainer) {
+      baseLayerContainer.classList.remove("blur");
+    }
   });
 }
 

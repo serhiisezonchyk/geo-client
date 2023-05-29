@@ -1,4 +1,4 @@
-import { Button, Modal, Table, Input, Tag, Select } from "antd";
+import { Button, Modal, Table, Tag } from "antd";
 import { useState } from "react";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { createRole, deleteRole, updateRole } from "../../http/roleApi";
@@ -43,7 +43,7 @@ const RoleTable = ({
       render: (records) => (
         <span>
           {Array.from(records).map((policy) => {
-            if (policy.size != 0) return <Tag key={policy}>{policy}</Tag>;
+            if (policy.size !== 0) return <Tag key={policy}>{policy}</Tag>;
           })}
         </span>
       ),

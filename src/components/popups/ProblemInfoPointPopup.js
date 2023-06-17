@@ -5,7 +5,7 @@ const ProblemInfoPointPopup = ({ data }) => {
   console.log("data.img", process.env.REACT_APP_API_URL);
   return (
     <Card border="0">
-      {data.img ? (
+      {data.img !=="null" ? (
         <Card.Img
           variant="top"
           src={process.env.REACT_APP_API_URL + data.img}
@@ -19,7 +19,7 @@ const ProblemInfoPointPopup = ({ data }) => {
           {data.category_problem.name} № {data.id}
         </Card.Title>
         <Card.Text style={{ marginTop: "0px" }}>
-          {data.description === null ? data.description : "Опис відсутній."}
+          {data.description !== null ? data.description : "Опис відсутній."}
         </Card.Text>
       </Card.Body>
       <Card.Footer>
@@ -33,7 +33,7 @@ const ProblemInfoPointPopup = ({ data }) => {
                 2,
                 "0"
               )}/${new Date(data.createdAt).getFullYear()} ${String(
-                new Date(data.createdAt).getHours()
+                new Date(data.createdAt).getUTCHours()
               ).padStart(2, "0")}:${String(
                 new Date(data.createdAt).getMinutes()
               ).padStart(2, "0")}`}
@@ -49,7 +49,7 @@ const ProblemInfoPointPopup = ({ data }) => {
                 2,
                 "0"
               )}/${new Date(data.updatedAt).getFullYear()} ${String(
-                new Date(data.updatedAt).getHours()
+                new Date(data.updatedAt).getUTCHours()
               ).padStart(2, "0")}:${String(
                 new Date(data.updatedAt).getMinutes()
               ).padStart(2, "0")}`}
